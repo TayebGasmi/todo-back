@@ -2,17 +2,18 @@
 import nodemailer, { createTransport } from "nodemailer";
 import { TokenInput } from "./../models/token.model";
 import logger from "./../logs/logger";
-const transport = createTransport({
-  service: "Gmail",
+const transport = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    pass: process.env.EMAIL_PASS,
-    user: process.env.EMAIL_USER,
+    user: "5d711413e5defa",
+    pass: "333d1c7059822e",
   },
 });
 export const sendRestMail = async (to: string, token: TokenInput) => {
   try {
     await transport.sendMail({
-      from: process.env.EMAIL_USER,
+      from: "to do app",
       to: to,
       subject: "Reset Password",
       html: `<h1>Reset Password</h1>
@@ -23,7 +24,6 @@ export const sendRestMail = async (to: string, token: TokenInput) => {
     });
     logger.info(`Reset password mail sent to ${to}`);
   } catch (error: any) {
-    console.log(error);
     logger.error(error.message);
   }
 };

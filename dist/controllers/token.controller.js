@@ -17,6 +17,7 @@ const token_model_1 = __importDefault(require("../models/token.model"));
 const uuid_1 = require("uuid");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const mail_1 = require("./../utils/mail");
+const logger_1 = __importDefault(require("./../logs/logger"));
 const createToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield user_model_1.default.findOne({ email: req.body.email }).lean().exec();
@@ -48,6 +49,7 @@ const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         user.password = req.body.password;
         yield user.save();
         yield token.remove();
+        logger_1.default.info(`Password reset successfully for user ${user.email}`);
         return res.status(200).json({ message: "Password reset successfully" });
     }
     catch (error) {

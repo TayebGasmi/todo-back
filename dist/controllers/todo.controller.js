@@ -21,7 +21,7 @@ const addTodo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         const todo = new todo_model_1.default({
             title,
             description,
-            owner: owner.id,
+            owner: owner.id || owner._id,
         });
         yield todo.save();
         return res.status(201).json({ message: "Todo created", todo });
@@ -34,7 +34,8 @@ const getTodos = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     try {
         //@ts-ignore
         const owner = req === null || req === void 0 ? void 0 : req.user;
-        const todos = yield todo_model_1.default.find({ owner: owner.id });
+        const id = owner.id || owner._id;
+        const todos = yield todo_model_1.default.find({ owner: id });
         return res.status(200).json({ todos });
     }
     catch (error) {
@@ -50,8 +51,9 @@ const updateTodo = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             return res.status(404).json({ message: "Todo not found" });
         //@ts-ignore
         const owner = req === null || req === void 0 ? void 0 : req.user;
+        const ownerId = owner.id || owner._id;
         //verify if the todo belongs to the user
-        if (todo.owner.toString() !== owner.id.toString())
+        if (todo.owner.toString() !== ownerId.toString())
             return res.status(401).json({ message: "Unauthorized" });
         if (title)
             todo.title = title;
@@ -75,7 +77,9 @@ const deleteTodo = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         //@ts-ignore
         const owner = req === null || req === void 0 ? void 0 : req.user;
         //verify if the todo belongs to the user
-        if (todo.owner.toString() !== owner.id.toString())
+        const ownerId = owner.id || owner._id;
+        //verify if the todo belongs to the user
+        if (todo.owner.toString() !== ownerId.toString())
             return res.status(401).json({ message: "Unauthorized" });
         yield todo.remove();
         return res.status(200).json({ message: "Todo deleted" });

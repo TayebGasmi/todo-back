@@ -14,19 +14,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendRestMail = void 0;
 //send mail with nodemailer
-const nodemailer_1 = require("nodemailer");
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const logger_1 = __importDefault(require("./../logs/logger"));
-const transport = (0, nodemailer_1.createTransport)({
-    service: "Gmail",
+const transport = nodemailer_1.default.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
     auth: {
-        pass: process.env.EMAIL_PASS,
-        user: process.env.EMAIL_USER,
+        user: "5d711413e5defa",
+        pass: "333d1c7059822e",
     },
 });
 const sendRestMail = (to, token) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield transport.sendMail({
-            from: process.env.EMAIL_USER,
+            from: "to do app",
             to: to,
             subject: "Reset Password",
             html: `<h1>Reset Password</h1>
@@ -36,7 +37,6 @@ const sendRestMail = (to, token) => __awaiter(void 0, void 0, void 0, function* 
         logger_1.default.info(`Reset password mail sent to ${to}`);
     }
     catch (error) {
-        console.log(error);
         logger_1.default.error(error.message);
     }
 });

@@ -10,8 +10,8 @@ const validateRequest_1 = __importDefault(require("./../middlewares/validateRequ
 const todo_schema_1 = __importDefault(require("./../schemas/todo.schema"));
 const { addTodo, getTodos, updateTodo, deleteTodo } = todo_controller_1.default;
 const router = (0, express_1.Router)();
-router.post("/", (0, validateRequest_1.default)(todo_schema_1.default), authorize_1.default, addTodo);
-router.get("/", getTodos);
+router.post("/", authorize_1.default, (0, validateRequest_1.default)(todo_schema_1.default), addTodo);
+router.get("/", authorize_1.default, getTodos);
 router.put("/:id", authorize_1.default, updateTodo);
 router.delete("/:id", authorize_1.default, deleteTodo);
 exports.default = router;

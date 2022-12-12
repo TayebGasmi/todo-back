@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";
 import { sendRestMail } from "./../utils/mail";
+import logger from "./../logs/logger";
 
 const createToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -35,6 +36,7 @@ const resetPassword = async (
     user.password = req.body.password;
     await user.save();
     await token.remove();
+    logger.info(`Password reset successfully for user ${user.email}`);
     return res.status(200).json({ message: "Password reset successfully" });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });

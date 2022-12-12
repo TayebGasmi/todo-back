@@ -8,7 +8,7 @@ const addTodo = async (req: Request, res: Response, next: NextFunction) => {
     const todo = new Todo({
       title,
       description,
-      owner: owner.id,
+      owner: owner.id || owner._id,
     });
     await todo.save();
     return res.status(201).json({ message: "Todo created", todo });
@@ -20,7 +20,8 @@ const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {
     //@ts-ignore
     const owner = req?.user;
-    const todos = await Todo.find({ owner: owner.id });
+    const id = owner.id || owner._id;
+    const todos = await Todo.find({ owner: id });
     return res.status(200).json({ todos });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
@@ -34,8 +35,9 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
     if (!todo) return res.status(404).json({ message: "Todo not found" });
     //@ts-ignore
     const owner = req?.user;
+    const ownerId = owner.id || owner._id;
     //verify if the todo belongs to the user
-    if (todo.owner.toString() !== owner.id.toString())
+    if (todo.owner.toString() !== ownerId.toString())
       return res.status(401).json({ message: "Unauthorized" });
     if (title) todo.title = title;
     if (description) todo.description = description;
@@ -54,7 +56,9 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
     //@ts-ignore
     const owner = req?.user;
     //verify if the todo belongs to the user
-    if (todo.owner.toString() !== owner.id.toString())
+    const ownerId = owner.id || owner._id;
+    //verify if the todo belongs to the user
+    if (todo.owner.toString() !== ownerId.toString())
       return res.status(401).json({ message: "Unauthorized" });
     await todo.remove();
     return res.status(200).json({ message: "Todo deleted" });
