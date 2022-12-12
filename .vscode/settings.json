@@ -1,0 +1,6 @@
+{
+  "sonarlint.connectedMode.project": {
+    "connectionId": "todo",
+    "projectKey": "todos_eli"
+  }
+}
